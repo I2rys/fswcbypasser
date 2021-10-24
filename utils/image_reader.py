@@ -14,7 +14,7 @@ pytesseract.pytesseract.tesseract_cmd = parsed_file_data["tesseract_exe"]
 img = cv2.imread("./image.png")
 img = cv2.resize(img, (90, 90))
 
-##Main
+#Main
 cv2.imshow("Image", img)
 
 text = pytesseract.image_to_string(img)

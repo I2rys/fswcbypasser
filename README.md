@@ -3,7 +3,6 @@
 <h4 align="center">IP UDP stresser using FreeStresser with captcha bypasser</h4>
 <p align="center">
 	<a href="https://github.com/I2rys/FSWCBypasser/blob/main/LICENSE"><img src="https://img.shields.io/github/license/I2rys/FSWCBypasser?style=flat-square"></img></a>
-	<a href="https://github.com/I2rys/FSWCBypasser"><img src="https://bettercodehub.com/edge/badge/I2rys/FSWCBypasser?branch=main"></a>
 	<a href="https://github.com/I2rys/FSWCBypasser/issues"><img src="https://img.shields.io/github/issues/I2rys/FSWCBypasser.svg"></img></a>
 	<a href="https://nodejs.org/"><img src="https://img.shields.io/badge/-Nodejs-green?style=flat-square&logo=Node.js"></img></a>
 	<a href="https://python.com"><img src="https://img.shields.io/badge/python-3670A0?style=flat-square&logo=python&logoColor=ffdd54"></img></a>

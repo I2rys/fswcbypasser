@@ -1,20 +1,20 @@
-#Dependencies
+# Dependencies
 import cv2
 import json
 import pytesseract
 
-#Startup
-file_data = open("./settings.json", "r")
-parsed_file_data = json.loads(file_data.read())
+# Startup
+settings = open("./settings.json", "r")
+settings = json.loads(settings.read())
 
-#Configurations
-pytesseract.pytesseract.tesseract_cmd = parsed_file_data["tesseract_exe"]
+# Configurations
+pytesseract.pytesseract.tesseract_cmd = settings["tesseract_exe"]
 
-#Variables
+# Variables
 img = cv2.imread("./image.png")
 img = cv2.resize(img, (90, 90))
 
-#Main
+# Main
 cv2.imshow("Image", img)
 
 text = pytesseract.image_to_string(img)
